@@ -1,0 +1,30 @@
+{
+  "name": "node_multiroom_chat",
+  "version": "1.0.0",
+  "description": "A Simple Multiroom chat with NodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brenomachadodomonte/node_multiroom_chat.git"
+  },
+  "keywords": [
+    "cht"
+  ],
+  "author": "Breno Machado do Monte",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brenomachadodomonte/node_multiroom_chat/issues"
+  },
+  "homepage": "https://github.com/brenomachadodomonte/node_multiroom_chat#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "consign": "^0.1.6",
+    "ejs": "^2.5.6",
+    "express": "^4.15.3",
+    "express-validator": "^3.2.0",
+    "socket.io": "^2.0.3"
+  }
+}
