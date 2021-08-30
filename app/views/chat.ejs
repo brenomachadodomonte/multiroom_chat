@@ -1,0 +1,145 @@
+<!DOCTYPE HTML>
+<html lang="pt-br">
+	<head>
+		<meta charset="UTF-8">
+
+		<title>Multiroom Chat</title>
+		
+		<!-- JQUERY -->
+		<script src="js/jquery-2.2.1.js"></script>
+		
+		<!-- bootstrap  -->
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+
+		<!-- style -->
+		<link href="css/style.css" rel="stylesheet">
+		
+		<script type="text/javascript">
+		
+			$(document).ready(function(){
+				$("#exibe_chat").click(function(){
+					$("#conversa").show();
+					$("#participantes").hide();
+					ocultaNavbar();
+				});
+				
+				$("#exibe_participantes").click(function(){
+					$("#participantes").show();
+					$("#conversa").hide();
+					ocultaNavbar();
+				});
+			});
+			
+			function ocultaNavbar(){
+				$("#btn_navbar_toggle").attr("class","navbar-toggle collapsed");
+				$("#navbar-collapse-1").attr("class","navbar-collapse collapse");
+				$("#btn_navbar_toggle").attr("aria-expanded","false");
+				$("#navbar-collapse-1").attr("aria-expanded","false");
+			}
+		</script>
+	</head>
+
+	<body>
+	
+	
+		<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1" id="btn_navbar_toggle">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Multiroom Chat</a>
+				</div>
+				
+				
+				<div class="collapse navbar-collapse" id="navbar-collapse-1">
+					<ul class="nav navbar-nav">
+						<li>
+							<a href="#" id="exibe_chat">Chat</a>
+						</li>
+						<li>
+							<a href="#" id="exibe_participantes">Users</a>
+						</li>
+						<li>
+							<a href="/">Leave Chat</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	
+		<div class="container">
+            <div class="row conversa" id="conversa">
+				<div class="col-md-1"></div>
+				<div class="col-md-10" id="messages"></div>
+				<div class="col-md-1"></div>
+                
+            </div>
+			
+			<div class="row participantes" id="participantes" style="display:none">
+				<div class="col-md-1"></div>
+				<div class="col-md-10" id="users"></div>
+				<div class="col-md-1"></div>
+                
+            </div>
+        </div>
+		
+		<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+			<div class="container">
+				<div class="panel-body campo-mensagem">
+					<div class="col-md-12">
+						<div class="input-group">
+							<input type="text" class="form-control" id="message" placeholder="Message">
+							<input type="hidden" id="nickname" value="<%=formData.nickname%>">
+							<input type="hidden" id="user_updated" value="0">
+							<span class="input-group-btn">
+								<button class="btn btn-default" type="button" id="send-message"><i class="glyphicon glyphicon-share-alt"></i></button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>		
+		
+		<script src="js/bootstrap.min.js"></script>
+
+		<script src="/socket.io/socket.io.js"></script>
+
+		<script type="text/javascript">
+			var socket = io('http://localhost:3000');
+
+			$('#send-message').click(function(){
+				var params = {
+					message: $('#message').val(),
+					nickname: $('#nickname').val(),
+					user_updated: $('#user_updated').val(),
+				}
+				if(params.message !== ''){
+					socket.emit('msgToServer', params);
+				}
+				$('#message').val('');
+				$('#user_updated').val('1');
+			});
+
+			socket.on('msgToClient', function(data){
+				var classDialog = (data.nickname === $('#nickname').val()) ? 'dialogo me' : 'dialogo';
+				var html = `<div class="${classDialog}">
+					<h4>${data.nickname}</h4>
+					<p>${data.message}</p>
+				</div>`;
+
+				$("#messages").append(html);
+				window.scrollTo(0, document.body.scrollHeight);
+			});
+
+			socket.on('usersToClient', function(data){
+				$("#users").append(`<span class="participante"><img src="images/ico_usuario.png">${data.nickname}</span>`);
+			});
+		</script>
+
+
+	</body>
+</html>
